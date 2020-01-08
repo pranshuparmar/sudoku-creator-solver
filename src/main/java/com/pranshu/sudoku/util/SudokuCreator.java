@@ -27,8 +27,11 @@ public class SudokuCreator {
 			createRemainingRows();
 		}
 
-		if (ctr > MAX_LIMIT) { // if counter has crossed max limit then it is highly likely that created puzzle
-								// is incorrect, need to recreate the puzzle
+		if (ctr > MAX_LIMIT) {
+			/*
+			 * if counter has crossed max limit then it is highly likely that created puzzle
+			 * is incorrect, need to recreate the puzzle
+			 */
 			ctr = 0;
 			createSudoku();
 		}
@@ -104,7 +107,7 @@ public class SudokuCreator {
 	// Checks whether this number is already present in the block
 	private boolean performBlockCheck(int xPos, int yPos) {
 		for (int i = xPos - 3; i < xPos; i++) {
-			try {
+			try { // checking complete block irrespective of filled data
 				Integer[] row = puzzle.get(i);
 				for (int y = yPos - 3; y < yPos; y++) {
 					if (row[y] == checkingNum) {
@@ -112,7 +115,7 @@ public class SudokuCreator {
 					}
 				}
 			} catch (IndexOutOfBoundsException ex) {
-			} // checking complete block irrespective of filled data
+			}
 		}
 		return true;
 	}
