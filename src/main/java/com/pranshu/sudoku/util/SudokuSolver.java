@@ -14,16 +14,18 @@ import com.pranshu.sudoku.helper.SudokuHelper;
 
 public class SudokuSolver {
 
-	private ArrayList<Integer[]> solvedPuzzle = new ArrayList<Integer[]>();
+	private ArrayList<Integer[]> solvedPuzzle;
 	private ArrayList<ArrayList<Integer>> allColumns;
 	private ArrayList<ArrayList<Integer>> allBlocks;
-	private ArrayList<ArrayList<Integer>> possibleValues;
 	private ArrayList<ArrayList<Integer>> prevPossibleValues;
 	private SudokuHelper helper = new SudokuHelper(solvedPuzzle);
-	public int ctr = 0;
 	private boolean isUnique = true;
 
+	public int ctr = 0;
+	public ArrayList<ArrayList<Integer>> possibleValues;
+
 	public ArrayList<Integer[]> solveSudoku(ArrayList<Integer[]> puzzle) {
+		solvedPuzzle = new ArrayList<Integer[]>();
 		copyPuzzle(puzzle);
 		boolean isUnsolved = true;
 		while (isUnsolved) {
@@ -34,7 +36,6 @@ public class SudokuSolver {
 			prevPossibleValues = possibleValues;
 			findPossiblevalues();
 			if (prevPossibleValues != null && prevPossibleValues.equals(possibleValues)) {
-				// System.err.println("Puzzle has multiple solutions, breaking loop!");
 				isUnique = false;
 				break;
 			}
@@ -65,6 +66,8 @@ public class SudokuSolver {
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				ArrayList<Integer> values = new ArrayList<Integer>();
+				values.add(i);
+				values.add(j);
 				int data = solvedPuzzle.get(i)[j];
 				if (data != 0) {
 					values.add(data);
@@ -75,7 +78,7 @@ public class SudokuSolver {
 
 					rValues.retainAll(cValues);
 					rValues.retainAll(bValues);
-					values = rValues; // will retain only common values
+					values.addAll(rValues); // will retain only common values
 				}
 				possibleValues.add(values);
 			}
@@ -145,8 +148,8 @@ public class SudokuSolver {
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				++dataNum;
-				if (solvedPuzzle.get(i)[j] == 0 && possibleValues.get(dataNum).size() == 1) {
-					solvedPuzzle.get(i)[j] = possibleValues.get(dataNum).get(0);
+				if (solvedPuzzle.get(i)[j] == 0 && possibleValues.get(dataNum).size() == 3) {
+					solvedPuzzle.get(i)[j] = possibleValues.get(dataNum).get(2);
 				}
 			}
 		}
@@ -168,4 +171,5 @@ public class SudokuSolver {
 		solveSudoku(puzzle);
 		return isUnique;
 	}
+
 }
