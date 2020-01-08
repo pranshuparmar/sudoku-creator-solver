@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import com.pranshu.sudoku.helper.MultiSolutionHelper;
 import com.pranshu.sudoku.util.SudokuCreator;
 import com.pranshu.sudoku.util.SudokuObfuscator;
 import com.pranshu.sudoku.util.SudokuSolver;
@@ -14,6 +15,11 @@ import com.pranshu.sudoku.util.SudokuSolver;
  */
 public class App {
 	public static void main(String[] args) {
+		playUniqueSudoku();
+		playMultiSolSudoku();
+	}
+
+	private static void playUniqueSudoku() {
 		System.out.println("Hello World!");
 		System.out.println("Here's the sudoku puzzle:\n");
 
@@ -27,8 +33,6 @@ public class App {
 
 		SudokuObfuscator obf = new SudokuObfuscator();
 		LocalDateTime obfuscatinStartTime = LocalDateTime.now();
-		// ArrayList<Integer[]> obfuscatedPuzzle = obf.obfuscateSudoku(puzzle); // might
-		// return puzzle with multiple solutions
 		ArrayList<Integer[]> obfuscatedPuzzle = obf.obfuscateUniqueSudoku(puzzle);
 		LocalDateTime obfuscatinEndTime = LocalDateTime.now();
 
@@ -55,6 +59,52 @@ public class App {
 		} else {
 			System.err.println("\nAttempted solution is incorrect!\n");
 		}
+	}
+
+	private static void playMultiSolSudoku() {
+		System.out.println("Hello World!");
+		System.out.println("Here's the sudoku puzzle:\n");
+
+		SudokuCreator creator = new SudokuCreator();
+		LocalDateTime creationStartTime = LocalDateTime.now();
+		ArrayList<Integer[]> puzzle = creator.createSudoku();
+		LocalDateTime creationEndTime = LocalDateTime.now();
+
+		System.out.println("Puzzle creation took " + ChronoUnit.MILLIS.between(creationStartTime, creationEndTime)
+				+ " millisecond(s) and " + creator.ctr + " iteration(s).\n");
+
+		SudokuObfuscator obf = new SudokuObfuscator();
+		LocalDateTime obfuscatinStartTime = LocalDateTime.now();
+		ArrayList<Integer[]> obfuscatedPuzzle = obf.obfuscateMultiSolSudoku(puzzle);
+		LocalDateTime obfuscatinEndTime = LocalDateTime.now();
+
+		System.out
+				.println("Puzzle obfuscation took " + ChronoUnit.MILLIS.between(obfuscatinStartTime, obfuscatinEndTime)
+						+ " millisecond(s) and " + obf.ctr + " iteration(s).\n");
+		printPuzzle(obfuscatedPuzzle);
+
+		System.out.println("\nHere's the correct solution to the puzzle:\n");
+		printPuzzle(puzzle);
+
+		LocalDateTime solutionStartTime = LocalDateTime.now();
+		ArrayList<ArrayList<Integer[]>> allSolutions = new MultiSolutionHelper()
+				.attemptMultipleSolutions(obfuscatedPuzzle);
+		LocalDateTime solutionEndTime = LocalDateTime.now();
+
+		System.out.println("\nPrinting " + allSolutions.size() + " solutions:\n");
+
+		int ctr = 0, expectedSol = 0;
+		for (ArrayList<Integer[]> solution : allSolutions) {
+			System.out.println("\nSolution " + (++ctr) + ":\n");
+			printPuzzle(solution);
+
+			if (isSolutionCorrect(puzzle, solution)) {
+				expectedSol = ctr;
+			}
+		}
+		System.out.println("Puzzle solutions took " + ChronoUnit.MILLIS.between(solutionStartTime, solutionEndTime)
+				+ " millisecond(s).\n");
+		System.out.println("Solution " + expectedSol + " was the expected one!\n");
 	}
 
 	// Prints the puzzle
@@ -86,4 +136,5 @@ public class App {
 		}
 		return true;
 	}
+
 }
