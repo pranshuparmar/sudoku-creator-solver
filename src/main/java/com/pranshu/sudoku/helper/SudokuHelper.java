@@ -1,6 +1,7 @@
 package com.pranshu.sudoku.helper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class SudokuHelper {
@@ -107,5 +108,33 @@ public class SudokuHelper {
 		allBlocks.add(block8);
 		allBlocks.add(block9);
 		return allBlocks;
+	}
+
+	// Returns whether a sudoku is invalid
+	public boolean isInvalid() {
+		// checking for blocks
+		ArrayList<ArrayList<Integer>> allBlocks = createBlocks();
+		for (ArrayList<Integer> block : allBlocks) {
+			if (Arrays.stream(block.toArray()).distinct().toArray().length < 9) {
+				return true;
+			}
+		}
+
+		// checking for columns
+		ArrayList<ArrayList<Integer>> allColumns = createColumns();
+		for (ArrayList<Integer> column : allColumns) {
+			if (Arrays.stream(column.toArray()).distinct().toArray().length < 9) {
+				return true;
+			}
+		}
+
+		// checking for rows
+		for (Integer[] row : puzzle) {
+			if (Arrays.stream(row).distinct().toArray().length < 9) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
