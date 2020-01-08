@@ -13,9 +13,11 @@ public class SudokuObfuscator {
 	private ArrayList<Integer[]> obfuscatedPuzzle;
 	public int ctr = 0;
 
-	// This method randomly hides numbers from the puzzle but doesn't guarantee a
-	// well-formed sudoku with unique solution
-	public ArrayList<Integer[]> obfuscateSudoku(ArrayList<Integer[]> puzzle) {
+	/*
+	 * This method randomly hides numbers from the puzzle but doesn't guarantee a
+	 * well-formed sudoku with unique solution
+	 */
+	private ArrayList<Integer[]> obfuscateSudoku(ArrayList<Integer[]> puzzle) {
 		++ctr;
 		obfuscatedPuzzle = new ArrayList<Integer[]>();
 		for (int i = 0; i < 9; i++) {
@@ -32,11 +34,25 @@ public class SudokuObfuscator {
 		return obfuscatedPuzzle;
 	}
 
-	// This method will call SudokuSolver to discard the obfuscatedPuzzle if it has
-	// multiple solutions thus returning only a well-formed sudoku
+	/*
+	 * This method will call SudokuSolver to discard the obfuscatedPuzzle if it has
+	 * multiple solutions thus returning only a well-formed sudoku
+	 */
 	public ArrayList<Integer[]> obfuscateUniqueSudoku(ArrayList<Integer[]> puzzle) {
 		obfuscatedPuzzle = obfuscateSudoku(puzzle);
 		while (!new SudokuSolver().isUniqueSolution(obfuscatedPuzzle)) {
+			obfuscatedPuzzle = obfuscateSudoku(puzzle);
+		}
+		return obfuscatedPuzzle;
+	}
+
+	/*
+	 * This method will call SudokuSolver to discard the obfuscatedPuzzle if it has
+	 * unique solutions thus returning only a NOT well-formed sudoku
+	 */
+	public ArrayList<Integer[]> obfuscateMultiSolSudoku(ArrayList<Integer[]> puzzle) {
+		obfuscatedPuzzle = obfuscateSudoku(puzzle);
+		while (new SudokuSolver().isUniqueSolution(obfuscatedPuzzle)) {
 			obfuscatedPuzzle = obfuscateSudoku(puzzle);
 		}
 		return obfuscatedPuzzle;
