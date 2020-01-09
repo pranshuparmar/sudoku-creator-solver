@@ -8,14 +8,7 @@ public class MultiSolutionHelper {
 
 	private static ArrayList<ArrayList<Integer[]>> allSolutions = new ArrayList<ArrayList<Integer[]>>();
 
-	public ArrayList<ArrayList<Integer[]>> attemptMultipleSolutions(ArrayList<Integer[]> origPuzzle) {
-		solveSudoku(origPuzzle);
-		discardIncorrectSolution();
-
-		return allSolutions;
-	}
-
-	private void solveSudoku(ArrayList<Integer[]> puzzle) {
+	public ArrayList<ArrayList<Integer[]>> attemptMultipleSolutions(ArrayList<Integer[]> puzzle) {
 		SudokuSolver solver = new SudokuSolver();
 		ArrayList<Integer[]> solution = solver.solveSudoku(puzzle);
 		if (isSolved(solution)) {
@@ -26,38 +19,29 @@ public class MultiSolutionHelper {
 				if (values.size() > 3) {
 					for (int i = 2; i < values.size(); i++) {
 						solution.get(values.get(0))[values.get(1)] = values.get(i);
-						solveSudoku(solution);
+						attemptMultipleSolutions(solution);
 					}
 					break;
 				}
 			}
 		}
+		return allSolutions;
 	}
 
-	// Verifies if any of the cell is still empty
+	// Checks for the validity of solution
 	private boolean isSolved(ArrayList<Integer[]> solution) {
+		// verifies if any of the cell is still empty
 		for (Integer[] row : solution) {
 			for (int i = 0; i < 9; i++) {
 				if (row[i] == 0)
 					return false;
 			}
 		}
-		return true;
-	}
 
-	/*
-	 * Discards incorrect solutions. SudokuSolver is working fine but there is issue
-	 * in multi solution logic, this method should not be required. Regardless, all
-	 * solutions are being found.
-	 */
-	private void discardIncorrectSolution() {
-		ArrayList<Integer> toRemove = new ArrayList<Integer>();
-		for (int i = allSolutions.size() - 1; i >= 0; i--) {
-			if (new SudokuHelper(allSolutions.get(i)).isInvalid())
-				toRemove.add(i);
-		}
-		for (Integer i : toRemove) {
-			allSolutions.remove((int) i);
-		}
+		// discards incorrect solution
+		if (new SudokuHelper(solution).isInvalid())
+			return false;
+
+		return true;
 	}
 }
