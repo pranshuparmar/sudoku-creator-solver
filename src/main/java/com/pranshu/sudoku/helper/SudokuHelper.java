@@ -7,6 +7,8 @@ import java.util.Iterator;
 public class SudokuHelper {
 
 	private ArrayList<Integer[]> puzzle;
+	private ArrayList<ArrayList<Integer>> allColumns = new ArrayList<ArrayList<Integer>>();
+	private ArrayList<ArrayList<Integer>> allBlocks = new ArrayList<ArrayList<Integer>>();
 
 	public SudokuHelper(ArrayList<Integer[]> puzzle) {
 		this.puzzle = puzzle;
@@ -15,7 +17,6 @@ public class SudokuHelper {
 	// Returns a list of all columns for the puzzle
 	public ArrayList<ArrayList<Integer>> createColumns() {
 		Iterator<Integer[]> itr = puzzle.iterator();
-		ArrayList<ArrayList<Integer>> allColumns = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> column1 = new ArrayList<Integer>();
 		ArrayList<Integer> column2 = new ArrayList<Integer>();
 		ArrayList<Integer> column3 = new ArrayList<Integer>();
@@ -53,7 +54,6 @@ public class SudokuHelper {
 
 	// Returns a list of all blocks of the puzzle
 	public ArrayList<ArrayList<Integer>> createBlocks() {
-		ArrayList<ArrayList<Integer>> allBlocks = new ArrayList<ArrayList<Integer>>();
 		ArrayList<Integer> block1 = new ArrayList<Integer>();
 		ArrayList<Integer> block2 = new ArrayList<Integer>();
 		ArrayList<Integer> block3 = new ArrayList<Integer>();
@@ -113,7 +113,7 @@ public class SudokuHelper {
 	// Returns whether a sudoku is invalid
 	public boolean isInvalid() {
 		// checking for blocks
-		ArrayList<ArrayList<Integer>> allBlocks = createBlocks();
+		createBlocks();
 		for (ArrayList<Integer> block : allBlocks) {
 			if (Arrays.stream(block.toArray()).distinct().toArray().length < 9) {
 				return true;
@@ -121,7 +121,7 @@ public class SudokuHelper {
 		}
 
 		// checking for columns
-		ArrayList<ArrayList<Integer>> allColumns = createColumns();
+		createColumns();
 		for (ArrayList<Integer> column : allColumns) {
 			if (Arrays.stream(column.toArray()).distinct().toArray().length < 9) {
 				return true;
